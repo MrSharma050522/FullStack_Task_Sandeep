@@ -2,15 +2,15 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { saveToken, setName } from "../Store/slice";
-import classes from "./Navbar.module.css";
+import { RootState } from "../Store/store"; // Import RootState from the store file
+import "./Navbar.css";
 
 export default function Navbar() {
-  const userName = useSelector((state) => state.username);
-  console.log("User Name - ", userName);
+  const userName = useSelector((state: RootState) => state.auth.username);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutUser = (event) => {
+  const logoutUser = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     dispatch(saveToken(""));
     dispatch(setName(""));
@@ -18,37 +18,37 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar ${classes.navstyle}`}>
-      <h1 className={classes.h1}>Hello! {userName || "Guest"} </h1>
+    <nav className="navstyle">
+      <h1 className="h1">Hello! {userName || "Guest"} </h1>
       <h2>Your Daily Planner</h2>
       <ul className="nav">
         {!userName && (
           <li className="nav-item">
             <NavLink
-              className={`nav-link ${classes.navLink}`}
+              className="navLink"
               to="/login"
             >
-              <button className={classes.button}>Login</button>
+              <button className="button">Login</button>
             </NavLink>
           </li>
         )}
         {!userName && (
           <li className="nav-item">
             <NavLink
-              className={`nav-link ${classes.navLink}`}
+              className="navLink"
               to="/register"
             >
-              <button className={classes.button}>Register</button>
+              <button className="button">Register</button>
             </NavLink>
           </li>
         )}
         {userName && (
           <li>
             <NavLink
-              className={`nav-link ${classes.navLink}`}
+              className="navLink"
               to="/mytask"
             >
-              <button className={classes.button}>All Task</button>
+              <button className="button">All Task</button>
             </NavLink>
           </li>
         )}
@@ -56,10 +56,10 @@ export default function Navbar() {
           <li className="nav-item">
             <a
               href="/"
-              className={`nav-link ${classes.navLink}`}
+              className="navLink"
               onClick={logoutUser}
             >
-              <button className={classes.button}>Logout</button>
+              <button className="button">Logout</button>
             </a>
           </li>
         )}

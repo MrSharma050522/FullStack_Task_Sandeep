@@ -38,9 +38,10 @@
   /* margin: 4px 2px; Add some margin */
   cursor: pointer; /* Add a pointer cursor on hover */
   border-radius: 8px; /* Rounded corners */
+  margin: 10px;
 }
 
 .button:hover {
-  background-color: #272727; /* Darker green on hover */
+  background-color: #30761e; /* Darker green on hover */
 }
 

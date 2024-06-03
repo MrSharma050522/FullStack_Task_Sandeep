@@ -7,7 +7,7 @@ import Register from "./User/Register";
 
 export const backendURL = "http://localhost:3005";
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <BrowserRouter>
@@ -20,6 +20,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;

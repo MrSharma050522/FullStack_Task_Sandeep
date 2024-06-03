@@ -1,19 +1,27 @@
 import React, { Fragment, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { backendURL } from "../App";
-import classes from "./MyTask.module.css";
+import "./MyTask.css";
 
-export default function TaskItem(props) {
-  const el = props.el;
+interface TaskItemProps {
+  el: {
+    completed: boolean;
+    text: string;
+    updatedAt: string;
+    _id: string;
+  };
+}
+
+const TaskItem: React.FC<TaskItemProps> = ({ el }) => {
   const [edit, setEdit] = useState(false);
   const [done, setDone] = useState(el.completed);
   const [task, setTask] = useState(el.text);
   const [showTask, setShowTask] = useState(true);
-  const taskEditRef = useRef();
-  const token = useSelector((state) => state.token);
+  const taskEditRef = useRef<HTMLInputElement>(null);
+  const token = useSelector((state: any) => state.token);
 
-  const updateTaskHandler = (event, text, completed = false) => {
-    fetch(`${backendURL}/task/update-task/${event.target.id}`, {
+  const updateTaskHandler = (event: React.MouseEvent<HTMLButtonElement>, text: string, completed = false) => {
+    fetch(`${backendURL}/task/update-task/${event.currentTarget.id}`, {
       method: "PATCH",
       headers: {
         token: token,
@@ -28,30 +36,30 @@ export default function TaskItem(props) {
       .then((data) => {});
   };
 
-  const editHandler = (event) => {
+  const editHandler = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (edit && !done) {
-      const text = taskEditRef.current.value;
-
+      const text = taskEditRef.current!.value;
+  
       if (text.trim().length === 0) {
         return;
       } else {
         setTask(text);
-        updateTaskHandler(event, text);
+        updateTaskHandler(event as React.MouseEvent<HTMLButtonElement>, text);
       }
-      taskEditRef.current.value = "";
+      taskEditRef.current!.value = "";
     }
     setEdit(!edit);
   };
-
-  const taskDoneHandler = (event) => {
+  
+  const taskDoneHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!done) {
       updateTaskHandler(event, el.text, true);
       setDone(true);
     } else {
       setShowTask(false);
-      fetch(`${backendURL}/task/delete/${event.target.id}`, {
+      fetch(`${backendURL}/task/delete/${event.currentTarget.id}`, {
         method: "DELETE",
         headers: {
           token: token,
@@ -60,12 +68,12 @@ export default function TaskItem(props) {
       })
         .then((res) => res.json())
         .then((data) => {
-          setTask(null);
+          setTask("");
         });
     }
   };
 
-  const closeHandler = (event) => {
+  const closeHandler = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setEdit(false);
   };
@@ -74,10 +82,10 @@ export default function TaskItem(props) {
     <Fragment>
       {showTask && (
         <div
-          className={`alert ${classes.item}`}
-          style={{
-            backgroundColor: `${done ? "grey" : "aqua"}`,
-          }}
+          className="item"
+          // style={{
+          //   backgroundColor: `${done ? "grey" : "aqua"}`,
+          // }}
         >
           <h3 style={{ textDecoration: `${done ? "line-through" : ""}` }}>
             {task}
@@ -86,16 +94,16 @@ export default function TaskItem(props) {
           <p>{new Date(el.updatedAt).toLocaleString()}</p>
           {edit && !done && (
             <input
-              className={classes.edit}
+              className="edit"
               type="text"
               required
               ref={taskEditRef}
             />
           )}
           <br />
-          <div className={classes.buttonHolder}>
+          <div className="buttonHolder">
             <button
-              className={classes.button}
+              className="button"
               id={el._id}
               onClick={editHandler}
             >
@@ -103,7 +111,7 @@ export default function TaskItem(props) {
             </button>
             {edit && !done && (
               <button
-                className={classes.button}
+                className="button"
                 id={el._id}
                 onClick={closeHandler}
               >
@@ -113,7 +121,7 @@ export default function TaskItem(props) {
             <button
               onClick={taskDoneHandler}
               id={el._id}
-              className={classes.btnDelete}
+              className="btnDelete"
             >
               {!done ? "Done" : "Delete"}
             </button>
@@ -122,4 +130,6 @@ export default function TaskItem(props) {
       )}
     </Fragment>
   );
-}
+};
+
+export default TaskItem;
